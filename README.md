@@ -10,7 +10,7 @@ APM aims to provide a complete framework for sharing APL code. A proof of concep
 
 * [Acre-Desktop](https://github.com/the-carlisle-group/Acre-Desktop) - An APL project framework developed and maintained by The Carlisle Group.
 
-* [link](https://github.com/Dyalog/link) - A Dyalog tool to load and synchronise source code from a folder into a namespace in the active workspace.
+* [Dyalog](https://www.dyalog.com) - APM currently requires Dyalog v17.0 only.
 
 ## Installation
 
@@ -34,7 +34,11 @@ Follow the instructions on [Acre-Dektop's project page](https://github.com/the-c
 
 ### APM
 
-1. Download the `APM.dyalog` script and install it as a user command for Dyalog.
+1. Download the `APM.dyalog` script and install it as a user command for Dyalog. This is done by adding the path to the script to the serach path of Spice. For example, if you place the script in `C:\Users\me\Documents\MyUCMDs\APM.dyalog`
+
+```
+      ]settings cmddir ,C:\Users\me\Documents\MyUCMDs
+```
 
 ### verdaccio
 
@@ -52,4 +56,107 @@ To test the registry, create an account by following these steps:
 
 ## Usage
 
-To 
+### Create your first Project
+
+To get started, we'll create a project called `MyProject` in the directory `/path/to/projects/`. When following the instructions replace the name and path with whatever you like and/or is appropriate on your machine. 
+
+In a Dyalog 17.0 session, create a new project by calling:
+
+```
+      ]APM.CreateProject /path/to/projects/MyProject #.MyProject
+Added script "quadVars"
+Project my-project created
+Current directory set to C:/Users/gil/MyProject/
+Install packages using ]APM.AddPackage                                  
+```
+
+This will create a project folder on disk and also set it as the current directory for the duration of the session. It also opens the project and tracks changes to it using Acre. We can confirm that it works by creating a function in the project space:
+
+```
+      )ED MyProject.Hello
+```
+
+And write a few lines:
+
+```
+r←Hello name
+
+r←'Hello ',name
+```
+
+Now fix the function and you should see a message from Acre in the session:
+
+```
+Saved: #.MyProject.Hello
+```
+
+Let's surprise the user by adding the number of days until next Easter in the above function. Is there a package that could help us with that?
+
+```
+      ]APM.FindPackage date
+NAME                      | DESCRIPTION          | AUTHOR          | DATE       | VERSION  | KEYWORDS
+dateandtime               | DateAndTime offers…  | =Kai Jaeger     | 2018-07-25 | 1.5.2    | date time APL
+```
+
+Looks like there is a date package. To install a package we simpy call `]APM.AddPackage` with a list of package names to install:
+
+```
+      ]APM.AddPackage dateandtime
+Packages: +1
++
+Resolving: total 1, reused 1, downloaded 0, done
+
+dependencies:
++ dateandtime 1.5.2
+```
+
+This will install the latest version available of the dateandtime package in our project folder. We now refresh the workspace by running `]APM.loadproject .`
+
+This checks the project folder for dependencies and makes sure to link them into the project space in the workspace.
+
+With the package added and the project reloaded we can now edit the function again and extend it.
+
+```
+      )ED MyProject.Hello
+```
+
+Add the 3 lines in the bottom.
+
+```
+ r←Hello name;easterDays;nextEaster
+
+ r←'Hello ',name
+
+ easterDays←DateAndTime.(DateTime2DayDecimal Easter 0 1+1↑⎕TS)
+ nextEaster←0~⍨0⌈⌊easterDays-DateAndTime.Timestamp2DayDecimal ⎕TS
+ r,←'. Next Easter is coming up in ',(⍕nextEaster),' days.'
+```
+
+Fix the function and try it out:
+
+```
+Saved: #.MyProject.Hello
+      #.MyProject.Hello 'Gil'
+Hello Gil. Next Easter is coming up in 269 days.
+```
+
+We can inspect the workspace structure by issuing the command `]map`.
+```
+      ]map
+#
+·   MyProject
+·   ·   ∇ Hello
+·   ·   AcreConfig → #.[Namespace]
+·   ·   DateAndTime → #.__packages.dateandtime_1_5_2.DateAndTime
+·   ·   __apm → #.[Namespace]
+·   ·   quadVars
+·   __packages
+·   ·   dateandtime_1_5_2
+·   ·   ·   AcreConfig → #.[Namespace]
+·   ·   ·   DateAndTime [Class]
+·   ·   ·   __apm → #.[Namespace]
+```
+
+Here we see our project space `MyProject` in the root and also that it contains a function `Hello`, three references to other spaces and finally a namespace called `quadVars`. Note how the package we added `DateAndTime` has been installed in a separate tree called `__packages` and that a reference has been created to it in our project space. This is how packages are made available to the dependant project.
+
+

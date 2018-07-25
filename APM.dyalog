@@ -120,9 +120,7 @@
           ~⎕NEXISTS dir:⍵
           dirs←les⊃7 ⎕NINFO⍠('Wildcard' 1)('Follow' 0)⊢dir,'*'
           0∊⍴dirs:⍵
-          ⍝ on Mac, sym links are relative
-          ⍝ on Win, they are absolute
-          dirs←(⊂dir){':'∊⍵:⍵ ⋄ ⍺,⍵}¨dirs
+          dirs←(⊂dir){'/:'∨.=⍨2↑⍵:⍵ ⋄ ⍺,⍵}¨dirs
           deps←les 0 loadProject¨dirs
           0∊⍴deps:⍵
           ⍵⊣⍵.nspath∘{
