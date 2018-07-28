@@ -34,7 +34,7 @@ Follow the instructions on [Acre-Dektop's project page](https://github.com/the-c
 
 ### APM
 
-1. Download the `APM.dyalog` script and install it as a user command for Dyalog. This is done by adding the path to the script to the serach path of Spice. For example, if you place the script in `C:\Users\me\Documents\MyUCMDs\APM.dyalog`
+1. Download the `APM.dyalog` script and install it as a user command for Dyalog. This is done by adding the path to the script to the search path of Spice. For example, if you place the script in `C:\Users\me\Documents\MyUCMDs\APM.dyalog`
 
 ```
       ]settings cmddir ,C:\Users\me\Documents\MyUCMDs
