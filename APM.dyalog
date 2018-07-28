@@ -137,7 +137,7 @@
           cfg←readCfg pj
      
           ns←cfg tgtSpace top tgt cfg.projectSpace
-          9=⎕NC ns:0
+          9=⎕NC ns:cfg
           ~⎕NEXISTS dir,'/acreconfig.txt':. ⍝ missing acre config file?
           cmd←'acre.openproject ',dir,' ',ns
           cmd,←(~top)/' -track=off'
