@@ -38,7 +38,7 @@
      
     ∇
 
-    ∇ r←Run(Cmd Input);ns
+    ∇ {r}←Run(Cmd Input);ns
       :Select Cmd
       :Case 'AddPackage'
           r←Input.registry add Input.Arguments Input.dev
@@ -116,8 +116,9 @@
       }
 
       loadDependencies←{
-          dir←⊃1 ⎕NPARTS ⍵.folder,⊃⍺⌽'../' 'node_modules/'
-          ~⎕NEXISTS dir:⍵
+          depDirs←⊃¨1 ⎕NPARTS¨(⊂⍵.folder),¨'node_modules/' '../'
+          ~∨/m←⎕NEXISTS depDirs:⍵
+          dir←⊃m/depDirs
           dirs←les⊃7 ⎕NINFO⍠('Wildcard' 1)('Follow' 0)⊢dir,'*'
           0∊⍴dirs:⍵
           dirs←(⊂dir){'/:'∨.=⍨2↑⍵:⍵ ⋄ ⍺,⍵}¨dirs
