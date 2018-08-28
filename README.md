@@ -2,31 +2,35 @@
 
 ## Introduction
 
-APM aims to provide a complete framework for sharing APL code. A proof of concept has been implemented by using JavaScript's own package management framework: [npmjs](https://docs.npmjs.com/). This is a largely un-opinionated framework and after some experimentation it proved to be easy to set up and use for APL code as well. APM was built on top of the following components:
+APM aims to provide a complete framework for sharing APL code. 
 
-* [verdaccio](https://www.verdaccio.org/) - A private npm registry. This can be installed both locally (on your own machine or in office server) and/or in the cloud. It can also be configured to act as a proxy, so you can host packages in a private registry with a fallback strategy on a public registry.
+A proof of concept has been implemented by using JavaScript's own package management framework: [npmjs](https://docs.npmjs.com/). This is a largely un-opinionated framework and after some experimentation it proved to be easy to set up and use for APL code as well. APM was built on top of the following components:
+
+* [verdaccio](https://www.verdaccio.org/) - A private npm registry. This can be installed locally (on your own machine or an office server) and/or in the cloud. 
+
+  It can also be configured to act as a proxy, so you can host packages in a private registry with a fallback strategy on a public registry.
 
 * [pnpm](https://pnpm.js.org/en/) - An efficient npm client that organises package dependencies in a fast, secure and predictable way.
 
 * [Acre-Desktop](https://github.com/the-carlisle-group/Acre-Desktop) - An APL project framework developed and maintained by The Carlisle Group.
 
-* [Dyalog](https://www.dyalog.com) - APM currently requires Dyalog v17.0 only.
+* [Dyalog](https://www.dyalog.com) - APM requires Dyalog v17.0.
 
 ## Installation
 
-To start using APM you will need to install the client-side components in addition to the APM script in this repository.
+To start using APM you will need to install the client-side components in addition to the APM script from this repository.
 
 ### NodeJS & npm
 
 1. Download and install [nodejs](https://nodejs.org/en/). This includes both the node framework and the npm client which are required to interact with the registry.
 
-1. Open a command prompt and verify that the installation was successful by issuing the command `npm -v`. This should return the current version of the npm client.
+2. Open a command prompt and verify that the installation was successful by issuing the command `npm -v`. This should return the current version of the npm client.
 
 ### pnpm
 
-1. Now install version 2 of pnpm by issuing the command `npm i pnpm@2 -g`.
+3. Now install version 2 of pnpm by issuing the command `npm i pnpm@2 -g`.
 
-1. Verify the installation with `pnpm -v` which should return the version number of the pnpm client.
+4. Verify the installation with `pnpm -v` which should return the version number of the pnpm client.
 
 ### Acre-Desktop
 
@@ -34,15 +38,21 @@ Follow the instructions on [Acre-Dektop's project page](https://github.com/the-c
 
 ### APM
 
-1. Download the `APM.dyalog` script and install it as a user command for Dyalog. This is done by adding the path to the script to the search path of Spice. For example, if you place the script in `C:\Users\me\Documents\MyUCMDs\APM.dyalog`
+5. Download the `APM.dyalog` script and install it as a user command for Dyalog. 
 
-```
-      ]settings cmddir ,C:\Users\me\Documents\MyUCMDs
-```
+   If you place the script in `C:\Users\me\Documents\MyUCMDs\APM.dyalog` it will be found by any 17.0 installation because from 17.0 onwards this folder is one of the places scanned for user commands anyway.
+
+   If you want to put it into, say, `C:\elsewhere` then you must add this path to the list of folders scanned for user commands by something like this:
+
+   ```
+         ]settings cmddir ,C:\elsewhere
+   ```
 
 ### verdaccio
 
-A public registry is hosted on https://apm.theaplroom.com/ and you can immediately test the setup by trying to create an account there. Optionally, you can run your own registry by installing verdaccio and running it. To do that, open a new command shell and execute the following 2 commands (see instructions on the [verdaccio project's page](https://github.com/verdaccio/verdaccio)):
+A public registry is hosted on <https://apm.theaplroom.com/> and you can immediately test the setup by trying to create an account there. 
+
+Optionally, you can run your own registry by installing verdaccio and running it. To do that, open a new command shell and execute the following 2 commands (see instructions on the [verdaccio project's page](https://github.com/verdaccio/verdaccio)):
 
 1. Install verdaccio with `pnpm i -g verdaccio`
 
@@ -94,8 +104,8 @@ Let's surprise the user by adding the number of days until next Easter in the ab
 
 ```
       ]APM.FindPackage date
-NAME                      | DESCRIPTION          | AUTHOR          | DATE       | VERSION  | KEYWORDS
-dateandtime               | DateAndTime offers…  | =Kai Jaeger     | 2018-07-25 | 1.5.2    | date time APL
+NAME        | DESCRIPTION         | AUTHOR      | DATE       | VERSION  | KEYWORDS
+dateandtime | DateAndTime offers… | =Kai Jaeger | 2018-07-25 | 1.5.2    | date time APL
 ```
 
 Looks like there is a date package. To install a package we simpy call `]APM.AddPackage` with a list of package names to install:
@@ -157,6 +167,6 @@ We can inspect the workspace structure by issuing the command `]map`.
 ·   ·   ·   __apm → #.[Namespace]
 ```
 
-Here we see our project space `MyProject` in the root and also that it contains a function `Hello`, three references to other spaces and finally a namespace called `quadVars`. Note how the package we added `DateAndTime` has been installed in a separate tree called `__packages` and that a reference has been created to it in our project space. This is how packages are made available to the dependant project.
+Here we see our project space `MyProject` in the root and also that it contains a function `Hello`, three references to other spaces and finally a namespace called `quadVars`. 
 
-
+Note how the package `DateAndTime` we've added  has been installed in a separate tree called `__packages`, and that a reference has been created to it in our project space. This is how packages are made available to the dependant project.
