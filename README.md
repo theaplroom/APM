@@ -52,17 +52,17 @@ Follow the instructions on [Acre-Dektop's project page](https://github.com/the-c
 
 A public registry is hosted on <https://apm.theaplroom.com/> and you can immediately test the setup by trying to create an account there. 
 
-Optionally, you can run your own registry by installing verdaccio and running it. To do that, open a new command shell and execute the following 2 commands (see instructions on the [verdaccio project's page](https://github.com/verdaccio/verdaccio)):
-
-1. Install verdaccio with `pnpm i -g verdaccio`
-
-1. Run it with `verdaccio`
-
 To test the registry, create an account by following these steps:
 
 1. Set the default registry to use by issuing `pnpm config set registry https://apm.theaplroom.com/`. This will only need to be done once and will be remain until changed again.
 
 1. To create an account on the registry, issue `pnpm login`. You will be prompted for a username, password and email.
+
+Optionally, you can run your own registry by installing verdaccio and running it. To do that, open a new command shell and execute the following 2 commands (see instructions on the [verdaccio project's page](https://github.com/verdaccio/verdaccio)):
+
+1. Install verdaccio with `pnpm i -g verdaccio`
+
+1. Run it with `verdaccio`
 
 ## Usage
 
