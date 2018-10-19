@@ -29,8 +29,8 @@
       r,←c
      
       c←⎕NS ⍬
-      c.Name←'LoadProject'
-      c.Desc←'Load project into active workspace'
+      c.Name←'OpenProject'
+      c.Desc←'Open project into active workspace'
       c.Parse←'-target= -registry='
       r,←c
      
@@ -38,23 +38,34 @@
      
     ∇
 
-    ∇ {r}←Run(Cmd Input);ns
+    ∇ {r}←Run(Cmd Input);ns;cfg
+      r←''
       :Select Cmd
       :Case 'AddPackage'
           r←Input.registry add Input.Arguments Input.dev
+          cfg←loadProject'.'
       :Case 'FindPackage'
           r←Input.registry find⊃Input.Arguments
       :Case 'CreateProject'
-          r←createProject 2↑Input.Arguments
-      :Case 'LoadProject'
-          r←loadProject(⊃Input.Arguments)Input.target
+          cfg←createProject 2↑Input.Arguments
+          r←''
+          r,←⊂'Project ',cfg.name,' created'
+          r,←⊂'Current directory set to ',cfg.folder
+          r,←⊂'Install packages using ]APM.AddPackage'
+          r
+     
+      :Case 'OpenProject'
+          cfg←loadProject(⊃Input.Arguments)Input.target
+          r,←⊂'Project ',cfg.name,' opened'
+          r,←⊂'Current directory set to ',cfg.folder
+     
       :EndSelect
       r←⊃,/r,¨⎕UCS 13
     ∇
 
     ∇ r←level Help Cmd
       :Select Cmd
-      :Case 'LoadProject'
+      :Case 'OpenProject'
           r←']',NM,'.Load path/to/project'
      
       :EndSelect
@@ -71,9 +82,7 @@
       }
 
       json←{
-          ⍺←~(1=≡⍵)∧0=10|⎕DR ⍵ ⍝ default to decode if simple string
-          2::(7159+⍺)⌶⍵        ⍝ fallback for pre v16
-          ⍺ ⎕JSON ⍵
+          ⎕JSON⍠'Compact' 0⊢⍵
       }
 
       les←{
@@ -149,6 +158,10 @@
       loadProject←{
           ⍺←1
           dir target←2↑(⊆⍵),0
+          _←{
+              path←⊃1 ⎕NPARTS ⍵,'/'
+              ⎕SE.UCMD'cd ',path
+          }⍣⍺⊢dir
           cfg←⍺ loadSource dir target
           cfg≡0:0
           _←'__apm'(cfg.nspath{⍺⍺⍎⍺,'←⍵'})cfg
@@ -160,18 +173,15 @@
       createProject←{
           dir ns←⍵
           path←⊃1 ⎕NPARTS dir,'/'
+          ns←'#.'{⍵,⍨⍺/⍨⍺≢2↑⍵}ns
           cmd←'acre.createproject ',path,' ',ns
           nspath←⎕SE.UCMD cmd
           _←⎕SE.UCMD'cd ',path
           cfg←#.⎕NS''
-          cfg.name←camelToHyphen⊃⌽'.'(≠⊆⊢)ns
+          cfg.name←⊃⌽'.'(≠⊆⊢)ns
           cfg.version←'1.0.0'
           _←(json cfg)⎕NPUT path,'package.json'
-          r←''
-          r,←⊂'Project ',cfg.name,' created'
-          r,←⊂'Current directory set to ',path
-          r,←⊂'Install packages using ]APM.AddPackage'
-          r
+          loadProject'.'
       }
 
 :EndNamespace
