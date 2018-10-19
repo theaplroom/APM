@@ -52,8 +52,7 @@
           r,←⊂'Project ',cfg.name,' created'
           r,←⊂'Current directory set to ',cfg.folder
           r,←⊂'Install packages using ]APM.AddPackage'
-          r
-     
+        
       :Case 'OpenProject'
           cfg←loadProject(⊃Input.Arguments)Input.target
           r,←⊂'Project ',cfg.name,' opened'
